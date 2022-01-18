@@ -16,14 +16,20 @@
 
 import {BaseElement} from '../BaseElement';
 
-class Carousel extends BaseElement {
+export class Carousel extends BaseElement {
+  static get properties() {
+    return {
+      index: {type: Number, reflect: true},
+    };
+  }
+
   constructor() {
     super();
 
     /** @type {HTMLElement} */
     this._carouselTrack = undefined;
     /** @type {number} */
-    this._index = 0;
+    this.index = 0;
     /** @type {HTMLElement[]} */
     this._items = [];
     /** @type {HTMLButtonElement} */
@@ -56,7 +62,7 @@ class Carousel extends BaseElement {
     this._nextButton.addEventListener('click', this._next);
 
     this._items.forEach((e, i) =>
-      e.addEventListener('focusin', () => this._setIndex(i - this._index)),
+      e.addEventListener('focusin', () => this._setIndex(i - this.index)),
     );
     this._carouselTrack.addEventListener('keyup', this._onKeyup);
   }
@@ -118,7 +124,6 @@ class Carousel extends BaseElement {
         }
 
         const scrollTo = this._items[index];
-
         return this._carouselTrack.scrollTo(scrollTo.offsetLeft, 0);
       }
     }
@@ -130,15 +135,15 @@ class Carousel extends BaseElement {
    * @param {number} increment How many items to move by.
    */
   _setIndex(increment) {
-    this._index = this._index + increment;
+    this.index = this.index + increment;
 
-    if (this._index < 0) {
-      this._index = 0;
-    } else if (this._index >= this._items.length) {
-      this._index = this._items.length - 1;
+    if (this.index < 0) {
+      this.index = 0;
+    } else if (this.index >= this._items.length) {
+      this.index = this._items.length - 1;
     }
 
-    const active = this._items[this._index];
+    const active = this._items[this.index];
     active.focus({preventScroll: true});
     this._carouselTrack.scrollTo(active.offsetLeft, 0);
   }
